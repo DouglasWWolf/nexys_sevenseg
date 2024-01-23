@@ -21,7 +21,7 @@
 */
 
 
-module axi_7seg #
+module sevenseg_axi_fe #
 (
     // 0 = Single, 1 = Split  
     parameter DEFAULT_MODE   = 0,  
@@ -30,22 +30,21 @@ module axi_7seg #
     parameter DEFAULT_FORMAT = 3
 )
 (
-    input clk, resetn,
 
+    input         clk, resetn,
     output [31:0] display,
+    output [ 2:0] cfg,
 
-    output [7:0] digit_enable,
+   //================== This is an AXI4-Lite slave interface ==================
 
-    //================== This is an AXI4-Lite slave interface ==================
-        
     // "Specify write address"              -- Master --    -- Slave --
-    input[31:0]                             S_AXI_AWADDR,   
-    input                                   S_AXI_AWVALID,  
+    input[31:0]                             S_AXI_AWADDR,
+    input                                   S_AXI_AWVALID,
     output                                                  S_AXI_AWREADY,
     input[2:0]                              S_AXI_AWPROT,
 
     // "Write Data"                         -- Master --    -- Slave --
-    input[31:0]                             S_AXI_WDATA,      
+    input[31:0]                             S_AXI_WDATA,
     input                                   S_AXI_WVALID,
     input[3:0]                              S_AXI_WSTRB,
     output                                                  S_AXI_WREADY,
@@ -56,9 +55,9 @@ module axi_7seg #
     input                                   S_AXI_BREADY,
 
     // "Specify read address"               -- Master --    -- Slave --
-    input[31:0]                             S_AXI_ARADDR,     
+    input[31:0]                             S_AXI_ARADDR,
     input                                   S_AXI_ARVALID,
-    input[2:0]                              S_AXI_ARPROT,     
+    input[2:0]                              S_AXI_ARPROT,
     output                                                  S_AXI_ARREADY,
 
     // "Read data back to master"           -- Master --    -- Slave --
@@ -67,6 +66,8 @@ module axi_7seg #
     output[1:0]                                             S_AXI_RRESP,
     input                                   S_AXI_RREADY
     //==========================================================================
+
+
 );  
 
 // Any time the register map of this module changes, this number should
@@ -118,70 +119,36 @@ localparam DECERR = 3;
 // (128 bytes is 32 32-bit registers)
 localparam ADDR_MASK = 7'h7F;
 
-// 32-bit raw value and its BCD equivalent
-reg[31:0] single_raw, single_bcd;
+// 32-bit raw value
+reg[31:0] single_raw;
 
-// Digit-enable for a single 32-bit value
-reg[ 7:0] single_de;
-
-// Raw and BCD equivalents for a pair of 16-bit values
-reg[15:0] right_raw, left_raw, right_bcd, left_bcd;
-
-// Digit-enable for both of the 16-bit values
-reg[ 3:0] right_de, left_de;
+// Raw values for a pair of 16-bit values
+reg[15:0] right_raw, left_raw;
 
 // A 0-bit = "Hex", a 1-bit = "Decimal"
 reg[1:0] format;
-
-// The bit pattern to output depends on the desired format (hex or decimal)
-wire[31:0] single_out = (format[0] == 0) ? single_raw : single_bcd;
-wire[15:0] right_out  = (format[0] == 0) ? right_raw  : right_bcd;
-wire[15:0] left_out   = (format[1] == 0) ? left_raw   : left_bcd;
 
 // Display mode: one 8 character field, or two 4 four character fields
 localparam MODE_SINGLE = 0;
 localparam MODE_SPLIT  = 1;
 reg mode;
 
+// Pack the configuration bits into the "cfg" output
+assign cfg = {format, mode};
+
 // The displayed output is either a single field or two independent fields
-assign display = (mode == MODE_SINGLE) ? single_out : {left_out, right_out};
-
-// Determine which digits should be displayed. (Don't display leading zeros)
-assign digit_enable = (mode == MODE_SINGLE) ? single_de : {left_de, right_de};
-
-//=============================================================================
-// double_dabble - Converts binary to BCD
-//=============================================================================
-reg [31:0] dd_input;
-reg        dd_start;
-wire[31:0] dd_output;
-wire       dd_done;
-double_dabble#(.INPUT_WIDTH(32), .DECIMAL_DIGITS(8))
-(
-    .clk    (clk),
-    .resetn (resetn),
-    .BINARY (dd_input),
-    .START  (dd_start),
-    .BCD    (dd_output),
-    .DONE   (dd_done)
-);
-//=============================================================================
-
+assign display = (mode == MODE_SINGLE) ? single_raw : {left_raw, right_raw};
 
 //==========================================================================
 // This state machine handles AXI4-Lite write requests
 //
 // Drives: ashi_write_state
 //         ashi_wresp
-//         dd_input, dd_start
 //         mode,
 //         single_raw, right_raw, left_raw
 //         single_bcd, right_bcd, left_bcd
 //==========================================================================
 always @(posedge clk) begin
-
-    // This strobes high for only a single cycle at a time
-    dd_start <= 0;
 
     // If we're in reset, initialize important registers
     if (resetn == 0) begin
@@ -189,11 +156,8 @@ always @(posedge clk) begin
         format            <= DEFAULT_FORMAT;
         mode              <= DEFAULT_MODE;
         single_raw        <= 0;
-        single_bcd        <= 0;
         right_raw         <= 0;
-        right_bcd         <= 0;
         left_raw          <= 0;
-        left_bcd          <= 0;
 
     // If we're not in reset, and a write-request has occured...        
     end else case (ashi_write_state)
@@ -208,33 +172,24 @@ always @(posedge clk) begin
                
                     REG_SINGLE:
                         begin
-                            mode             <= MODE_SINGLE;
-                            single_raw       <= ashi_wdata;
-                            dd_input         <= ashi_wdata;
-                            dd_start         <= 1;
-                            ashi_write_state <= 1;
+                            mode       <= MODE_SINGLE;
+                            single_raw <= ashi_wdata;
                         end
 
                     REG_RIGHT:
                         begin
-                            mode             <= MODE_SPLIT;
-                            right_raw        <= ashi_wdata;
-                            dd_input         <= ashi_wdata;
-                            dd_start         <= 1;
-                            ashi_write_state <= 1;
+                            mode       <= MODE_SPLIT;
+                            right_raw  <= ashi_wdata;
                         end
 
                     REG_LEFT:
                         begin
-                            mode             <= MODE_SPLIT;
-                            left_raw         <= ashi_wdata;
-                            dd_input         <= ashi_wdata;
-                            dd_start         <= 1;
-                            ashi_write_state <= 1;
+                            mode       <= MODE_SPLIT;
+                            left_raw   <= ashi_wdata;
                         end
 
                     REG_FORMAT:
-                        format <= ashi_wdata;
+                        format         <= ashi_wdata;
 
                     // Writes to any other register are a decode-error
                     default: ashi_wresp <= DECERR;
@@ -242,18 +197,12 @@ always @(posedge clk) begin
             end
 
 
-        // Waits for double-dabble to complete
-        1:  if (dd_done) begin
-                if (ashi_windx == REG_SINGLE) single_bcd <= dd_output;
-                if (ashi_windx == REG_LEFT  ) left_bcd   <= dd_output;
-                if (ashi_windx == REG_RIGHT ) right_bcd  <= dd_output;
-                ashi_write_state <= 0;
-            end
+        // We should never get here.
+        1:  ashi_write_state <= 0;
 
     endcase
 end
 //==========================================================================
-
 
 
 
@@ -290,45 +239,6 @@ end
 //==========================================================================
 
 
-
-//==========================================================================
-// single_de = bitmap of which digits in single_out are significant
-//==========================================================================
-always @* begin
-    if      (single_out[31:04] == 0) single_de = 8'b00000001;
-    else if (single_out[31:08] == 0) single_de = 8'b00000011;
-    else if (single_out[31:12] == 0) single_de = 8'b00000111;
-    else if (single_out[31:16] == 0) single_de = 8'b00001111;
-    else if (single_out[31:20] == 0) single_de = 8'b00011111;
-    else if (single_out[31:24] == 0) single_de = 8'b00111111;
-    else if (single_out[31:28] == 0) single_de = 8'b01111111;
-    else                             single_de = 8'b11111111;
-end
-//==========================================================================
-
-
-//==========================================================================
-// right_de = bitmap of which digits in right_out are significant
-//==========================================================================
-always @* begin
-    if      (right_out[15:04] == 0) right_de = 4'b0001;
-    else if (right_out[15:08] == 0) right_de = 4'b0011;
-    else if (right_out[15:12] == 0) right_de = 4'b0111;
-    else                            right_de = 4'b1111;
-end
-//==========================================================================
-
-
-//==========================================================================
-// left_de = bitmap of which digits in left_out are significant
-//==========================================================================
-always @* begin
-    if      (left_out[15:04] == 0) left_de = 4'b0001;
-    else if (left_out[15:08] == 0) left_de = 4'b0011;
-    else if (left_out[15:12] == 0) left_de = 4'b0111;
-    else                           left_de = 4'b1111;
-end
-//==========================================================================
 
 
 
