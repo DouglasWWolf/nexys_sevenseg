@@ -118,7 +118,7 @@ localparam DECERR = 3;
 // (128 bytes is 32 32-bit registers)
 localparam ADDR_MASK = 7'h7F;
 
-// 32-bit raw value and it's BCD equivalent
+// 32-bit raw value and its BCD equivalent
 reg[31:0] single_raw, single_bcd;
 
 // Digit-enable for a single 32-bit value
@@ -197,7 +197,7 @@ always @(posedge clk) begin
                 // Assume for the moment that the result will be OKAY
                 ashi_wresp <= OKAY;              
             
-                // Convert the byte address into a register index
+                // Examine the register index to determine which register we're writing to
                 case (ashi_windx)
                
                     REG_SINGLE:
@@ -266,7 +266,7 @@ always @(posedge clk) begin
         // Assume for the moment that the result will be OKAY
         ashi_rresp <= OKAY;              
         
-        // Convert the byte address into a register index
+        // Determine which register the user wants to read
         case (ashi_rindx)
             
             // Allow a read from any valid register                
