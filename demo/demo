@@ -21,7 +21,7 @@ if [ "$1" == "dual" ]; then
 
     echo "Counting up in dual displays.  Left is in hex, right is in decimal"    
     echo "Ctrl-C to exit"
-    
+
     # Left display in hex, right display in decimal
     ./axireg $FORMAT 1
     
@@ -50,7 +50,7 @@ if [ "$1" == "" ]; then
 
     # Display is in decimal.  Change to 0 for Hex
     ./axireg $FORMAT 1
-    value=0;
+    value=0
     
     while [ 1 -eq 1 ]; do
 
