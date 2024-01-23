@@ -1,3 +1,9 @@
+//=============================================================================
+// sevenseg_driver - Drives 8 seven-segment modules, with common cathodes
+//
+// Each 4 bits of "display" correspond to a digit
+// Display of digits is gated by "digit_enable" bitmap.
+//=============================================================================
 module sevenseg_driver # (parameter CLOCK_FREQ = 100000000)
 (
     // Clock and rese3t
@@ -61,9 +67,17 @@ end
 assign ANODE = ~anode;
 //=============================================================================
 
+
+
 //=============================================================================
 // This block reads the bottom 4 bits of "shifter" and drives the CATHODE pins
 // of the 7-segment display to the correct values to display the character
+//
+// Inputs: anode        = Bitmap of which anode (i.e., 7-seg display) is active
+//         digit_enable = Bitmap of which digits should be output
+//         shifter      = bottom 4 bits map to the digit to be displayed
+//
+// Output: CATHODE = Driven to display the selected digit
 //=============================================================================
 always @* begin
     if ((digit_enable & anode) == 0)
