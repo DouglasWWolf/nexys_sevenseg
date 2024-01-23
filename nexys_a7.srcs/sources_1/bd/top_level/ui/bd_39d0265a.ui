@@ -18,11 +18,11 @@ preplace inst seven_seg -pg 1 -lvl 3 -x 740 -y 190 -defaultsOSRD -pinDir S_AXI l
 preplace inst system_interconnect -pg 1 -lvl 2 -x 490 -y 60 -defaultsOSRD -pinDir S00_AXI right -pinY S00_AXI 0R -pinDir M00_AXI right -pinY M00_AXI 130R -pinDir aclk left -pinY aclk 110L -pinDir aresetn left -pinY aresetn 130L
 preplace netloc CLK100MHZ_1 1 0 1 NJ 170
 preplace netloc CPU_RESETN_1 1 0 1 NJ 190
+preplace netloc hier_0_AN 1 3 1 NJ 210
+preplace netloc hier_0_SEG 1 3 1 NJ 190
 preplace netloc source_100mhz_interconnect_aresetn 1 1 1 N 190
 preplace netloc source_100mhz_peripheral_aresetn 1 1 2 NJ 270 640
 preplace netloc system_clock_clk_100mhz 1 1 2 360 250 620
-preplace netloc hier_0_SEG 1 3 1 NJ 190
-preplace netloc hier_0_AN 1 3 1 NJ 210
 preplace netloc hier_0_M_AXI 1 2 1 N 60
 preplace netloc hier_0_UART 1 3 1 NJ 60
 preplace netloc system_interconnect_M00_AXI 1 2 1 N 190

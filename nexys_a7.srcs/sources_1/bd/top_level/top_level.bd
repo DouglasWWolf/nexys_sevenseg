@@ -20,8 +20,8 @@
       },
       "seven_seg": {
         "sevenseg_driver": "",
-        "sevenseg_front_end": "",
-        "sevenseg_axi_front_end": ""
+        "sevenseg_axi_front_end": "",
+        "sevenseg_front_end": ""
       },
       "system_interconnect": ""
     },
@@ -825,71 +825,6 @@
               }
             }
           },
-          "sevenseg_front_end": {
-            "vlnv": "xilinx.com:module_ref:sevenseg_fe:1.0",
-            "xci_name": "top_level_sevenseg_fe_0_0",
-            "xci_path": "ip/top_level_sevenseg_fe_0_0/top_level_sevenseg_fe_0_0.xci",
-            "inst_hier_path": "seven_seg/sevenseg_front_end",
-            "reference_info": {
-              "ref_type": "hdl",
-              "ref_name": "sevenseg_fe",
-              "boundary_crc": "0x0"
-            },
-            "ports": {
-              "clk": {
-                "type": "clk",
-                "direction": "I",
-                "parameters": {
-                  "ASSOCIATED_RESET": {
-                    "value": "resetn",
-                    "value_src": "constant"
-                  },
-                  "FREQ_HZ": {
-                    "value": "100000000",
-                    "value_src": "ip_prop"
-                  },
-                  "PHASE": {
-                    "value": "0.0",
-                    "value_src": "ip_prop"
-                  },
-                  "CLK_DOMAIN": {
-                    "value": "/source_100mhz/system_clock_clk_out1",
-                    "value_src": "ip_prop"
-                  }
-                }
-              },
-              "resetn": {
-                "type": "rst",
-                "direction": "I",
-                "parameters": {
-                  "POLARITY": {
-                    "value": "ACTIVE_LOW",
-                    "value_src": "constant"
-                  }
-                }
-              },
-              "input_value": {
-                "direction": "I",
-                "left": "31",
-                "right": "0"
-              },
-              "cfg": {
-                "direction": "I",
-                "left": "2",
-                "right": "0"
-              },
-              "display": {
-                "direction": "O",
-                "left": "31",
-                "right": "0"
-              },
-              "digit_enable": {
-                "direction": "O",
-                "left": "7",
-                "right": "0"
-              }
-            }
-          },
           "sevenseg_axi_front_end": {
             "vlnv": "xilinx.com:module_ref:sevenseg_axi_fe:1.0",
             "xci_name": "top_level_sevenseg_axi_fe_0_0",
@@ -913,6 +848,10 @@
                   "PROTOCOL": {
                     "value": "AXI4LITE",
                     "value_src": "constant"
+                  },
+                  "FREQ_HZ": {
+                    "value": "100000000",
+                    "value_src": "ip_prop"
                   },
                   "ID_WIDTH": {
                     "value": "0",
@@ -997,6 +936,22 @@
                   "MAX_BURST_LENGTH": {
                     "value": "1",
                     "value_src": "auto"
+                  },
+                  "PHASE": {
+                    "value": "0.0",
+                    "value_src": "ip_prop"
+                  },
+                  "CLK_DOMAIN": {
+                    "value": "/source_100mhz/system_clock_clk_out1",
+                    "value_src": "ip_prop"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0",
+                    "value_src": "user_prop"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0",
+                    "value_src": "user_prop"
                   }
                 },
                 "port_maps": {
@@ -1109,6 +1064,18 @@
                   "ASSOCIATED_RESET": {
                     "value": "resetn",
                     "value_src": "constant"
+                  },
+                  "FREQ_HZ": {
+                    "value": "100000000",
+                    "value_src": "ip_prop"
+                  },
+                  "PHASE": {
+                    "value": "0.0",
+                    "value_src": "ip_prop"
+                  },
+                  "CLK_DOMAIN": {
+                    "value": "/source_100mhz/system_clock_clk_out1",
+                    "value_src": "ip_prop"
                   }
                 }
               },
@@ -1130,6 +1097,59 @@
               "cfg": {
                 "direction": "O",
                 "left": "2",
+                "right": "0"
+              }
+            }
+          },
+          "sevenseg_front_end": {
+            "vlnv": "xilinx.com:module_ref:sevenseg_fe:1.0",
+            "xci_name": "top_level_sevenseg_fe_0_0",
+            "xci_path": "ip/top_level_sevenseg_fe_0_0/top_level_sevenseg_fe_0_0.xci",
+            "inst_hier_path": "seven_seg/sevenseg_front_end",
+            "reference_info": {
+              "ref_type": "hdl",
+              "ref_name": "sevenseg_fe",
+              "boundary_crc": "0x0"
+            },
+            "ports": {
+              "clk": {
+                "type": "clk",
+                "direction": "I",
+                "parameters": {
+                  "ASSOCIATED_RESET": {
+                    "value": "resetn",
+                    "value_src": "constant"
+                  }
+                }
+              },
+              "resetn": {
+                "type": "rst",
+                "direction": "I",
+                "parameters": {
+                  "POLARITY": {
+                    "value": "ACTIVE_LOW",
+                    "value_src": "constant"
+                  }
+                }
+              },
+              "input_value": {
+                "direction": "I",
+                "left": "31",
+                "right": "0"
+              },
+              "cfg": {
+                "direction": "I",
+                "left": "2",
+                "right": "0"
+              },
+              "display": {
+                "direction": "O",
+                "left": "31",
+                "right": "0"
+              },
+              "digit_enable": {
+                "direction": "O",
+                "left": "7",
                 "right": "0"
               }
             }
@@ -1184,16 +1204,16 @@
             "ports": [
               "resetn",
               "sevenseg_driver/resetn",
-              "sevenseg_front_end/resetn",
-              "sevenseg_axi_front_end/resetn"
+              "sevenseg_axi_front_end/resetn",
+              "sevenseg_front_end/resetn"
             ]
           },
           "system_clock_clk_100mhz": {
             "ports": [
               "clk",
               "sevenseg_driver/clk",
-              "sevenseg_front_end/clk",
-              "sevenseg_axi_front_end/clk"
+              "sevenseg_axi_front_end/clk",
+              "sevenseg_front_end/clk"
             ]
           }
         }

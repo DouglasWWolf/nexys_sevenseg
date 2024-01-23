@@ -124,12 +124,12 @@ always @(posedge clk) begin
 
         // In state 1, start a dd conversion for "left"
         1:  begin
-                left_raw         <= input_value[31:16];
-                dd_input         <= input_value[31:16];
-                dd_start         <= 1;
-                which            <= REG_LEFT;
-                return_state     <= 0;
-                fsm_state        <= 2;
+                left_raw     <= input_value[31:16];
+                dd_input     <= input_value[31:16];
+                dd_start     <= 1;
+                which        <= REG_LEFT;
+                return_state <= 0;
+                fsm_state    <= 2;
             end
 
         // Here, we're waiting for double-dabble to complete so that
@@ -138,7 +138,7 @@ always @(posedge clk) begin
                 if (which == REG_SINGLE) single_bcd <= dd_output;
                 if (which == REG_RIGHT ) right_bcd  <= dd_output;
                 if (which == REG_LEFT  ) left_bcd   <= dd_output;
-                fsm_state                         <= return_state;
+                fsm_state                           <= return_state;
             end
 
     endcase
