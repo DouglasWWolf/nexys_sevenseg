@@ -36,7 +36,7 @@ always @(posedge clk) begin
     // The counter is always counting down to 0
     if (counter) counter <= counter - 1;
 
-    // If we're in reset, disable the 
+    // If we're in reset, disable the output
     if (resetn == 0) begin
         anode   <= 0;
         counter <= 0;

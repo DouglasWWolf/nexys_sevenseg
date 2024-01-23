@@ -20,8 +20,8 @@
         "axi_uartlite": "",
         "axi_uart_bridge": ""
       },
-      "sevenseg_driver": "",
-      "axi_7seg": ""
+      "axi_7seg": "",
+      "sevenseg_driver": ""
     },
     "interface_ports": {
       "UART": {
@@ -813,71 +813,6 @@
           }
         }
       },
-      "sevenseg_driver": {
-        "vlnv": "xilinx.com:module_ref:sevenseg_driver:1.0",
-        "xci_name": "top_level_sevenseg_driver_0_0",
-        "xci_path": "ip/top_level_sevenseg_driver_0_0/top_level_sevenseg_driver_0_0.xci",
-        "inst_hier_path": "sevenseg_driver",
-        "reference_info": {
-          "ref_type": "hdl",
-          "ref_name": "sevenseg_driver",
-          "boundary_crc": "0x0"
-        },
-        "ports": {
-          "clk": {
-            "type": "clk",
-            "direction": "I",
-            "parameters": {
-              "ASSOCIATED_RESET": {
-                "value": "resetn",
-                "value_src": "constant"
-              },
-              "FREQ_HZ": {
-                "value": "100000000",
-                "value_src": "ip_prop"
-              },
-              "PHASE": {
-                "value": "0.0",
-                "value_src": "ip_prop"
-              },
-              "CLK_DOMAIN": {
-                "value": "/source_100mhz/system_clock_clk_out1",
-                "value_src": "ip_prop"
-              }
-            }
-          },
-          "resetn": {
-            "type": "rst",
-            "direction": "I",
-            "parameters": {
-              "POLARITY": {
-                "value": "ACTIVE_LOW",
-                "value_src": "constant"
-              }
-            }
-          },
-          "display": {
-            "direction": "I",
-            "left": "31",
-            "right": "0"
-          },
-          "digit_enable": {
-            "direction": "I",
-            "left": "7",
-            "right": "0"
-          },
-          "ANODE": {
-            "direction": "O",
-            "left": "7",
-            "right": "0"
-          },
-          "CATHODE": {
-            "direction": "O",
-            "left": "7",
-            "right": "0"
-          }
-        }
-      },
       "axi_7seg": {
         "vlnv": "xilinx.com:module_ref:axi_7seg:1.0",
         "xci_name": "top_level_axi_7seg_0_0",
@@ -1153,6 +1088,71 @@
             "right": "0"
           }
         }
+      },
+      "sevenseg_driver": {
+        "vlnv": "xilinx.com:module_ref:sevenseg_driver:1.0",
+        "xci_name": "top_level_sevenseg_driver_0_0",
+        "xci_path": "ip/top_level_sevenseg_driver_0_0/top_level_sevenseg_driver_0_0.xci",
+        "inst_hier_path": "sevenseg_driver",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "sevenseg_driver",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "ASSOCIATED_RESET": {
+                "value": "resetn",
+                "value_src": "constant"
+              },
+              "FREQ_HZ": {
+                "value": "100000000",
+                "value_src": "ip_prop"
+              },
+              "PHASE": {
+                "value": "0.0",
+                "value_src": "ip_prop"
+              },
+              "CLK_DOMAIN": {
+                "value": "/source_100mhz/system_clock_clk_out1",
+                "value_src": "ip_prop"
+              }
+            }
+          },
+          "resetn": {
+            "type": "rst",
+            "direction": "I",
+            "parameters": {
+              "POLARITY": {
+                "value": "ACTIVE_LOW",
+                "value_src": "constant"
+              }
+            }
+          },
+          "display": {
+            "direction": "I",
+            "left": "31",
+            "right": "0"
+          },
+          "digit_enable": {
+            "direction": "I",
+            "left": "7",
+            "right": "0"
+          },
+          "ANODE": {
+            "direction": "O",
+            "left": "7",
+            "right": "0"
+          },
+          "CATHODE": {
+            "direction": "O",
+            "left": "7",
+            "right": "0"
+          }
+        }
       }
     },
     "interface_nets": {
@@ -1222,8 +1222,8 @@
         "ports": [
           "source_100mhz/peripheral_aresetn",
           "axi_uart_bridge/aresetn",
-          "sevenseg_driver/resetn",
-          "axi_7seg/resetn"
+          "axi_7seg/resetn",
+          "sevenseg_driver/resetn"
         ]
       },
       "system_clock_clk_100mhz": {
@@ -1231,8 +1231,8 @@
           "source_100mhz/clk_100mhz",
           "system_interconnect/aclk",
           "axi_uart_bridge/aclk",
-          "sevenseg_driver/clk",
-          "axi_7seg/clk"
+          "axi_7seg/clk",
+          "sevenseg_driver/clk"
         ]
       }
     },

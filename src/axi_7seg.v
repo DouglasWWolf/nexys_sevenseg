@@ -188,6 +188,12 @@ always @(posedge clk) begin
         ashi_write_state  <= 0;
         format            <= DEFAULT_FORMAT;
         mode              <= DEFAULT_MODE;
+        single_raw        <= 0;
+        single_bcd        <= 0;
+        right_raw         <= 0;
+        right_bcd         <= 0;
+        left_raw          <= 0;
+        left_bcd          <= 0;
 
     // If we're not in reset, and a write-request has occured...        
     end else case (ashi_write_state)
